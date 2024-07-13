@@ -1,0 +1,19 @@
+{
+  "prefix": "!",
+  "invite_link": "https://discord.com/oauth2/authorize?client_id=1261360375031664661&permissions=8&integration_type=0&scope=bot+applications.commands",
+  "community_groups": ["34520138"],
+  "roles": {
+    "verification": {
+      "verified": "1261533850484609115",
+      "unverified": "1261582312701694023"
+    },
+    "imperium": [
+      "1261552320727093379",
+      "1261552327823724555",
+      "1261552328004337735"
+    ]
+  },
+  "channels": {
+    "general": "1261529818462162989"
+  }
+}
