@@ -28,12 +28,14 @@ class RankRequest(discord.ui.View):
             return
         
         ranks = self.bot.config['ranks']
-        rank_roles = [self.bot.config["roles"]["verification"]["outsider"]]
+        rank_roles = []
 
         for member_role in member.roles:
             for rank_obj in ranks:
                 if str(member_role.id) == rank_obj['discord_role']:
                     rank_roles.append(member_role)    
+                if str(member_role.id) == self.bot.config["roles"]["verification"]["outsider"]:
+                    rank_roles.append(member_role)
 
         await member.remove_roles(*rank_roles)        
         await member.add_roles(rank, self.bot.config["roles"]["verification"]["member"], self.bot.config["roles"]["verification"]["lr_category"])
