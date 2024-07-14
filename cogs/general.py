@@ -1,12 +1,13 @@
 import platform
 import random
-
-import aiohttp
 import discord
+import pytube
+import os
+
 from discord import app_commands
 from discord.ext import commands
 from discord.ext.commands import Context
-
+from pytube.exceptions import RegexMatchError
 
 class General(commands.Cog, name="general"):
     def __init__(self, bot) -> None:
@@ -232,5 +233,40 @@ class General(commands.Cog, name="general"):
 
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
+    @app_commands.command(
+        name="download",
+        description="Download a youtube video"
+    )
+    @app_commands.describe(
+        link="The youtube video link to download"
+    )
+    async def download(self, interaction: discord.Interaction, link: str) -> None:
+        await interaction.response.defer(thinking=True)
+
+        try:
+            yt = pytube.YouTube(link)
+        except:
+            embed = discord.Embed(
+                description="Invalid Youtube link."
+            )
+            await interaction.followup.send(embed=embed)
+            return
+        
+        video = yt.streams.get_highest_resolution()
+
+        try:
+            video.download("/temp", filename="video.mp4")
+        except:
+            embed = discord.Embed(
+                description="Could not download the file.",
+                color=discord.Color.red()
+            )
+            await interaction.followup.send(embed=embed)
+            return
+        
+        embed = discord.Embed(
+            description=f"[{yt.title}]({link})"
+        )
+        await interaction.followup.send(embed=embed, file=discord.File(f"/temp/video.mp4"))
 async def setup(bot) -> None:
     await bot.add_cog(General(bot))

@@ -144,3 +144,57 @@ class DatabaseManager:
                 discord_id,
                 roblox_id
             )
+
+#   ==============================
+#   ========== TRACKER ===========
+#   ==============================
+
+    async def get_tracked_user(self, roblox_id: str) -> asyncpg.Record:
+        async with self.connection.acquire() as conn:
+            result = await conn.fetchrow(
+                "SELECT roblox_id, posted, moderator_id, reason, created_at FROM tracked_users WHERE roblox_id=$1",
+                roblox_id,
+            )
+            return result
+
+    async def get_tracked_users(self) -> list[asyncpg.Record]:
+        async with self.connection.acquire() as conn:
+            rows = await conn.fetch(
+                "SELECT * FROM tracked_users",
+            )
+            return [dict(row) for row in rows]
+
+    async def track_user(self, roblox_id: str, moderator_id: str, reason: str) -> bool:
+        async with self.connection.acquire() as conn:
+            result = await conn.execute(
+                "INSERT INTO tracked_users(roblox_id, posted, moderator_id, reason, created_at) VALUES ($1, $2, $3, $4, $5)",
+                roblox_id,
+                False,
+                moderator_id,
+                reason,
+                datetime.datetime.now()
+            )
+
+        if result: return True
+        return False
+    
+    async def untrack_user(self, roblox_id: str) -> bool:
+        async with self.connection.acquire() as conn:
+            result = await conn.execute(
+                "DELETE FROM tracked_users WHERE roblox_id=$1",
+                roblox_id
+            )
+
+            if result: return True
+            return False
+        
+    async def modify_tracked_user(self, roblox_id: str, posted: bool) -> bool:
+        async with self.connection.acquire() as conn:
+            result = await conn.execute(
+                "UPDATE tracked_users SET posted=$1 WHERE roblox_id=$2",
+                posted,
+                roblox_id
+            )
+
+            if result: return True
+            return False

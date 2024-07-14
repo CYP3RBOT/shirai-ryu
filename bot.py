@@ -2,7 +2,6 @@ import json
 import logging
 import os
 import platform
-import random
 import sys
 
 import asyncpg
@@ -12,6 +11,7 @@ from discord.ext.commands import Context
 from dotenv import load_dotenv
 
 from database import DatabaseManager
+from utils import roblox
 
 if not os.path.isfile(f"{os.path.realpath(os.path.dirname(__file__))}/config.json"):
     sys.exit("'config.json' not found! Please add it and try again.")
@@ -156,6 +156,91 @@ class DiscordBot(commands.Bot):
         channel = await bot.fetch_channel(self.config['channels']['general'])
         await channel.send("<@1134427767283396639> You are dirty jew.")
 
+    @tasks.loop(minutes=1.0)
+    async def check_tracker(self) -> None:
+        """
+        Check if any tracked users are online/offline and post it.
+        """
+
+        tracked_users = await bot.database.get_tracked_users()
+
+        if len(tracked_users) == 0:
+            return
+
+        user_ids = []
+
+        for x in tracked_users:
+            user_ids.append(int(x['roblox_id']))
+
+        user_presences = await roblox.get_user_presences_by_ids(user_ids)
+        user_names = await roblox.get_users_by_ids(user_ids)
+
+        try:
+            user_names = user_names['data']
+        except:
+            logger.error("Unknown error occured when fetching users by ids.")
+            return # Probably a 429 error
+        
+        try:
+            user_presences = user_presences['userPresences']
+        except:
+            logger.info("Check tracker hit a 429 error.")
+            return 
+        
+        tracker_post_channel = await bot.fetch_channel(self.config['channels']['tracker_post'])
+
+        if not tracker_post_channel:
+            logger.critical("Cannot find tracker post channel.")
+            return
+
+
+        for i, presence in enumerate(user_presences):
+            embed = None
+
+            game_id = presence['gameId']
+            place_id = presence['placeId']
+            last_location = presence['lastLocation']
+            
+            roblox_id = user_names[i]['id']
+            user_name = user_names[i]['name']
+            is_posted = tracked_users[i]['posted']
+
+            if presence['userPresenceType'] == 2: # user is playing a game
+                if not place_id and not is_posted: # user has joins off and wasn't posted
+                    embed = discord.Embed(
+                        description=f"[{user_name}]({await roblox.profile(roblox_id)}) is playing a game. Their joins are off.",
+                        color=discord.Color.green(),
+                    )
+
+                    await bot.database.modify_tracked_user(str(roblox_id), True)
+                elif place_id and not is_posted: # user has joins on and wasn't posted
+                    if place_id == 4238077359:
+                        embed = discord.Embed(
+                            description=f"[{user_name}]({await roblox.profile(roblox_id)}) is playing Coruscant.",
+                            color=discord.Color.green()
+                        )
+
+                        await bot.database.modify_tracked_user(str(roblox_id), True)
+                elif place_id and is_posted:
+                    if place_id != 4238077359:
+                        embed = discord.Embed(
+                            description=f"[{user_name}]({await roblox.profile(roblox_id)}) has left Coruscant.",
+                            color=discord.Color.red()
+                        )
+
+                    await bot.database.modify_tracked_user(str(roblox_id), False)
+            else:
+                embed = discord.Embed(
+                    description=f"[{user_name}]({await roblox.profile(roblox_id)}) has left {'Coruscant' if place_id else 'their game'}.",
+                    color=discord.Color.red()
+                )
+
+                await bot.database.modify_tracked_user(str(roblox_id), False)
+
+            if embed:
+                embed.set_thumbnail(url=(await roblox.get_user_avatar(roblox_id)))
+                await tracker_post_channel.send(embed=embed)
+                
     @status_task.before_loop
     async def before_status_task(self) -> None:
         """
@@ -165,10 +250,12 @@ class DiscordBot(commands.Bot):
 
     @call_ceo_a_dirty_jew_task.after_loop
     async def after_call_ceo_a_dirty_jew_task(self) -> None:
-        """
-        Before starting the task, we make sure the bot is ready
-        """
         await self.wait_until_ready()
+
+    @check_tracker.after_loop
+    async def after_check_tracker(self) -> None:
+        await self.wait_until_ready()
+
 
     async def setup_hook(self) -> None:
         """
@@ -184,6 +271,7 @@ class DiscordBot(commands.Bot):
         await self.init_db()
         await self.load_cogs()
         self.status_task.start()
+        self.check_tracker.start()
         # self.call_ceo_a_dirty_jew_task.start()
 
     async def on_message(self, message: discord.Message) -> None:

@@ -3,6 +3,9 @@
   "invite_link": "https://discord.com/oauth2/authorize?client_id=1261360375031664661&permissions=8&integration_type=0&scope=bot+applications.commands",
   "community_groups": ["34520138"],
   "roles": {
+    "tracker": {
+      "tracker_perms": "1261556128030920785"
+    },
     "verification": {
       "verified": "1261533850484609115",
       "unverified": "1261582312701694023"
@@ -14,6 +17,40 @@
     ]
   },
   "channels": {
-    "general": "1261529818462162989"
-  }
+    "general": "1261529818462162989",
+    "tracker_post": "1261778910002286707",
+    "rank_requests": "1261934182385586241"
+  },
+  "ranks": [
+    {
+      "name": "Seasoned Warrior",
+      "points": 1000,
+      "discord_role": "1261552397801623604"
+    },
+    {
+      "name": "Warrior",
+      "points": 500,
+      "discord_role": "1261552397071814676"
+    },
+    {
+      "name": "Master Assassin",
+      "points": 375,
+      "discord_role": "1261552396392337518"
+    },
+    {
+      "name": "Assassin",
+      "points": 250,
+      "discord_role": "1261935861222740028"
+    },
+    {
+      "name": "Vanguard",
+      "points": 100,
+      "discord_role": "1261935867812122654"
+    },
+    {
+      "name": "Novice",
+      "points": 0,
+      "discord_role": "1261935868365504554"
+    }
+  ]
 }

@@ -1,4 +1,5 @@
-import requests, datetime
+import requests
+import os
 import json
 from discord.ext import commands
 
@@ -42,6 +43,43 @@ async def get_user_by_name(user_name: str) -> dict:
     headers = {
         "accept": "application/json",
         "Content-Type": "application/json"
+    }
+
+    response = requests.post(url, headers=headers, data=data)
+
+    return response.json()
+
+async def get_user_avatar(user_id: str) -> dict:
+    print(user_id)
+    response = requests.get(
+      f"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={user_id}&size=48x48&format=Png&isCircular=false"
+    )
+
+    data = response.json()
+
+    data = data['data'][0]
+    
+    print(data['imageUrl'])
+    return data['imageUrl']
+
+async def get_user_presences_by_ids(user_ids: list[int]) -> dict:
+    """
+    Get ROBLOX user presences by IDs.
+
+    :param user_id: The user IDs.
+    :return: The ROBLOX user presences.
+    """
+    
+    url = "https://presence.roblox.com/v1/presence/users"
+    
+    data = json.dumps({
+        "userIds": user_ids
+    })
+
+    headers = {
+        "accept": "application/json",
+        "Content-Type": "application/json",
+        "Cookie": f".ROBLOSECURITY={os.getenv("ROBLOX_COOKIE")}"
     }
 
     response = requests.post(url, headers=headers, data=data)

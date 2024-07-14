@@ -36,7 +36,7 @@ class Moderation(commands.Cog, name="moderation"):
         )
         if member.guild_permissions.administrator:
             embed = discord.Embed(
-                description="User has administrator permissions.", color=0xE02B2B
+                description="User has administrator permissions.", color=discord.Color.red()
             )
             await context.send(embed=embed)
         else:
@@ -58,7 +58,7 @@ class Moderation(commands.Cog, name="moderation"):
             except:
                 embed = discord.Embed(
                     description="An error occurred while trying to kick the user. Make sure my role is above the role of the user you want to kick.",
-                    color=0xE02B2B,
+                    color=discord.Color.red(),
                 )
                 await context.send(embed=embed)
 
@@ -95,7 +95,7 @@ class Moderation(commands.Cog, name="moderation"):
         except:
             embed = discord.Embed(
                 description="An error occurred while trying to change the nickname of the user. Make sure my role is above the role of the user you want to change the nickname.",
-                color=0xE02B2B,
+                color=discord.Color.red(),
             )
             await context.send(embed=embed)
 
@@ -125,7 +125,7 @@ class Moderation(commands.Cog, name="moderation"):
         try:
             if member.guild_permissions.administrator:
                 embed = discord.Embed(
-                    description="User has administrator permissions.", color=0xE02B2B
+                    description="User has administrator permissions.", color=discord.Color.red()
                 )
                 await context.send(embed=embed)
             else:
@@ -147,7 +147,7 @@ class Moderation(commands.Cog, name="moderation"):
             embed = discord.Embed(
                 title="Error!",
                 description="An error occurred while trying to ban the user. Make sure my role is above the role of the user you want to ban.",
-                color=0xE02B2B,
+                color=discord.Color.red(),
             )
             await context.send(embed=embed)
 
@@ -165,7 +165,7 @@ class Moderation(commands.Cog, name="moderation"):
         if context.invoked_subcommand is None:
             embed = discord.Embed(
                 description="Please specify a subcommand.\n\n**Subcommands:**\n`add` - Add a warning to a user.\n`remove` - Remove a warning from a user.\n`list` - List all warnings of a user.",
-                color=0xE02B2B,
+                color=discord.Color.red(),
             )
             await context.send(embed=embed)
 
@@ -326,7 +326,7 @@ class Moderation(commands.Cog, name="moderation"):
         except Exception:
             embed = discord.Embed(
                 description="An error occurred while trying to ban the user. Make sure ID is an existing ID that belongs to a user.",
-                color=0xE02B2B,
+                color=discord.Color.red(),
             )
             await context.send(embed=embed)
 

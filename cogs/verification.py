@@ -151,16 +151,16 @@ class VerificationModal(discord.ui.Modal, title='Verification'):
 
         roblox_user = await roblox.get_user(user_input)
 
-        user_id = roblox_user["id"]
-        user_name = roblox_user["username"]
-
         if roblox_user is None:
             embed = discord.Embed(
-                description=f"User not found. Please try again.",
+                description=f"User \"{user_input}\" not found.",
                 color=discord.Color.red(),
             )      
             await interaction.response.send_message(embed=embed)      
             return
+        
+        user_id = roblox_user["id"]
+        user_name = roblox_user["username"]
 
         code = await self.bot.database.create_verification_code(str(interaction.user.id), str(user_id))
 
