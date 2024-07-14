@@ -230,12 +230,13 @@ class DiscordBot(commands.Bot):
 
                     await bot.database.modify_tracked_user(str(roblox_id), False)
             else:
-                embed = discord.Embed(
-                    description=f"[{user_name}]({await roblox.profile(roblox_id)}) has left {'Coruscant' if place_id else 'their game'}.",
-                    color=discord.Color.red()
-                )
+                if is_posted:
+                    embed = discord.Embed(
+                        description=f"[{user_name}]({await roblox.profile(roblox_id)}) has left {'Coruscant' if place_id else 'their game'}.",
+                        color=discord.Color.red()
+                    )
 
-                await bot.database.modify_tracked_user(str(roblox_id), False)
+                    await bot.database.modify_tracked_user(str(roblox_id), False)
 
             if embed:
                 embed.set_thumbnail(url=(await roblox.get_user_avatar(roblox_id)))

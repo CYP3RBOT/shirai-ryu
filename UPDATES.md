@@ -2,12 +2,14 @@
 
 List of all the updates that are made on the bot.
 
-### Version 1.1.1
+### Version 1.2
 
 - Removed unnecessary config keys
 - Made link, unlink, & links admin-only rather than owner-only
 - Fixed error occuring from user not having rank roles
 - Enable the "call_ceo_a_dirty_jew_task" task
+- Remove print statements from "get_user_avatar" function
+- Fix tracker posting user offline after acknowledged
 
 ### Version 1.1 (14 July 2024)
 
