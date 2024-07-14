@@ -375,9 +375,9 @@ class DiscordBot(commands.Bot):
         :param member: The member who joined the guild.
         """
         try:
-            await member.add_roles(int(bot.config['roles']['verification']['unverified']))
+            await member.add_roles(member.guild.get_role(int(bot.config['roles']['verification']['unverified'])))
         except:
-            pass
-        
+            pass  
+
 bot = DiscordBot()
 bot.run(os.getenv("BOT_TOKEN"))
