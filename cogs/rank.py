@@ -110,26 +110,27 @@ class Rank(commands.Cog, name="rank"):
             for rank_obj in ranks:
                 if str(member_role.id) == rank_obj['discord_role']:
                     rank_roles.append(member_role)
-
-        highest_role = rank_roles[-1]
-
-        if highest_role.position > rank.position:
-            embed = discord.Embed(
-                description=f"You cannot request a rank lower than yours.",
-                color=discord.Color.red()
-            )
-
-            await interaction.followup.send(embed=embed)
-            return
         
-        if rank in rank_roles:
-            embed = discord.Embed(
-                description=f"You cannot request a rank you already have.",
-                color=discord.Color.red()
-            )
+        if len(rank_roles) > 0:
+            highest_role = rank_roles[-1]
 
-            await interaction.followup.send(embed=embed)
-            return
+            if highest_role.position > rank.position:
+                embed = discord.Embed(
+                    description=f"You cannot request a rank lower than yours.",
+                    color=discord.Color.red()
+                )
+
+                await interaction.followup.send(embed=embed)
+                return
+            
+            if rank in rank_roles:
+                embed = discord.Embed(
+                    description=f"You cannot request a rank you already have.",
+                    color=discord.Color.red()
+                )
+
+                await interaction.followup.send(embed=embed)
+                return
         
         rank_requests_channel_id = self.bot.config['channels']['rank_requests']
         rank_requests_channel = await interaction.guild.fetch_channel(rank_requests_channel_id)
