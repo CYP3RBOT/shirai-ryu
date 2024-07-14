@@ -50,7 +50,6 @@ async def get_user_by_name(user_name: str) -> dict:
     return response.json()
 
 async def get_user_avatar(user_id: str) -> dict:
-    print(user_id)
     response = requests.get(
       f"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={user_id}&size=48x48&format=Png&isCircular=false"
     )
@@ -59,7 +58,6 @@ async def get_user_avatar(user_id: str) -> dict:
 
     data = data['data'][0]
     
-    print(data['imageUrl'])
     return data['imageUrl']
 
 async def get_user_presences_by_ids(user_ids: list[int]) -> dict:
