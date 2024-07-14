@@ -10,6 +10,7 @@ List of all the updates that are made on the bot.
 - Enable the "call_ceo_a_dirty_jew_task" task
 - Remove print statements from "get_user_avatar" function
 - Fix tracker posting user offline after acknowledged
+- Fix tracker posting wrong players
 
 ### Version 1.1 (14 July 2024)
 

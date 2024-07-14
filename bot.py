@@ -206,8 +206,6 @@ class DiscordBot(commands.Bot):
             user_name = user_name[0]['name']
             is_posted = tracked_users[i]['posted']
 
-            print(presence)
-
             if presence['userPresenceType'] == 2: # user is playing a game
                 if not place_id and not is_posted: # user has joins off and wasn't posted
                     embed = discord.Embed(
