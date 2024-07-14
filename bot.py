@@ -3,6 +3,7 @@ import logging
 import os
 import platform
 import sys
+import math
 
 import asyncpg
 import discord
@@ -193,17 +194,19 @@ class DiscordBot(commands.Bot):
             logger.critical("Cannot find tracker post channel.")
             return
 
-
         for i, presence in enumerate(user_presences):
             embed = None
 
             game_id = presence['gameId']
-            place_id = presence['placeId']
+            place_id = presence['rootPlaceId']
             last_location = presence['lastLocation']
             
-            roblox_id = user_names[i]['id']
-            user_name = user_names[i]['name']
+            roblox_id = presence['userId']
+            user_name = list(filter(lambda name: name['id'] == roblox_id, user_names))
+            user_name = user_name[0]['name']
             is_posted = tracked_users[i]['posted']
+
+            print(presence)
 
             if presence['userPresenceType'] == 2: # user is playing a game
                 if not place_id and not is_posted: # user has joins off and wasn't posted
@@ -239,6 +242,10 @@ class DiscordBot(commands.Bot):
                     await bot.database.modify_tracked_user(str(roblox_id), False)
 
             if embed:
+                embed.add_field(name="Reason", value=tracked_users[i]['reason'])
+                embed.add_field(name="Admin", value=f"<@{tracked_users[i]['moderator_id']}>")
+                embed.add_field(name="Date Added", value=f"<t:{math.floor(tracked_users[i]['created_at'].timestamp())}:d>")
+
                 embed.set_thumbnail(url=(await roblox.get_user_avatar(roblox_id)))
                 await tracker_post_channel.send(embed=embed)
                 

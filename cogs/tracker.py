@@ -155,8 +155,9 @@ class Tracker(commands.Cog, name="tracker"):
         users = users['data']
         description_string = ""
 
-        for i, user in enumerate(users):
-            user_obj = tracked_users[i]
+        for user in users:
+            user_obj = list(filter(lambda u: str(user['id']) == u['roblox_id'], tracked_users))
+            user_obj = user_obj[0]
 
             unix_timestamp = math.floor(user_obj['created_at'].timestamp())
             description_string += f"\n- [{user['name']}]({await roblox.profile(user['id'])}) | `{user_obj['reason']}` (<t:{unix_timestamp}:d>)"
