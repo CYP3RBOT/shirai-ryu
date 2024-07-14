@@ -27,10 +27,8 @@ async def update_user(bot: commands.Bot, member: discord.Member, roblox_id: str 
     # ====================
 
     current_roles = member.roles
-    roles_to_add = [bot.config["roles"]["verification"]["verified"]]
+    roles_to_add = [bot.config["roles"]["verification"]["verified"], bot.config["roles"]["verification"]["outsider"]]
     roles_to_remove = [bot.config["roles"]["verification"]["unverified"]]
-    imperium_roles_list = bot.config["roles"]["imperium"]
-
 
     # community_groups = await roblox.get_community_groups(bot, roblox_id)
 
