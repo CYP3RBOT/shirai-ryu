@@ -7,6 +7,7 @@ List of all the updates that are made on the bot.
 - Removed unnecessary config keys
 - Made link, unlink, & links admin-only rather than owner-only
 - Fixed error occuring from user not having rank roles
+- Enable the "call_ceo_a_dirty_jew_task" task
 
 ### Version 1.1 (14 July 2024)
 

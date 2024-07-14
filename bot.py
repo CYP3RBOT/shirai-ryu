@@ -272,7 +272,7 @@ class DiscordBot(commands.Bot):
         await self.load_cogs()
         self.status_task.start()
         self.check_tracker.start()
-        # self.call_ceo_a_dirty_jew_task.start()
+        self.call_ceo_a_dirty_jew_task.start()
 
     async def on_message(self, message: discord.Message) -> None:
         """
