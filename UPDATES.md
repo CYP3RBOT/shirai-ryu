@@ -4,7 +4,8 @@ List of all the updates that are made on the bot.
 
 ### Version 1.3 (14 July 2024)
 
-- Added new roles to rank-request and verification system.
+- Added new roles to rank-request and verification system
+- Create "unverified" auto role
 
 ### Version 1.2 (14 July 2024)
 

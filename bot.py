@@ -368,5 +368,16 @@ class DiscordBot(commands.Bot):
         else:
             raise error
         
+    async def on_member_join(self, member: discord.Member) -> None:
+        """
+        The code in this event is executed every time a member joins the guild.
+
+        :param member: The member who joined the guild.
+        """
+        try:
+            await member.add_roles(int(bot.config['roles']['verification']['unverified']))
+        except:
+            pass
+        
 bot = DiscordBot()
 bot.run(os.getenv("BOT_TOKEN"))
