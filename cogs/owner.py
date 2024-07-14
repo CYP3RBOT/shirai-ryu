@@ -199,7 +199,7 @@ class Owner(commands.Cog, name="owner"):
     )
     @app_commands.describe(discord_user="The Discord user to bind")
     @app_commands.describe(roblox_user="The ROBLOX user to bind")
-    @commands.is_owner()
+    @commands.has_permissions(administrator=True)
     async def link(self, context: Context, discord_user: discord.User, roblox_user: str) -> None:
         """
         Link a ROBLOX account to a Discord account.
@@ -244,7 +244,7 @@ class Owner(commands.Cog, name="owner"):
     )
     @app_commands.describe(platform="The platform for the user queried")
     @app_commands.describe(user="The user to view the linked accounts for")
-    @commands.is_owner()
+    @commands.has_permissions(administrator=True)
     async def links(self, context: Context, platform: str, user: str) -> None:
         """
         View a user's linked accounts.
@@ -339,7 +339,7 @@ class Owner(commands.Cog, name="owner"):
     )
     @app_commands.describe(discord_user="The Discord user to unlink")
     @app_commands.describe(roblox_user="The ROBLOX user to unlink")
-    @commands.is_owner()
+    @commands.has_permissions(administrator=True)
     async def unlink(self, context: Context, discord_user: discord.User, roblox_user: str) -> None:
         """
         Unlink a ROBLOX account to a Discord account.

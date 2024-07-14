@@ -2,6 +2,11 @@
 
 List of all the updates that are made on the bot.
 
+### Version 1.1.1
+
+- Removed unnecessary config keys
+- Made link, unlink, & links admin-only rather than owner-only
+
 ### Version 1.1 (14 July 2024)
 
 - Added "/download" command
