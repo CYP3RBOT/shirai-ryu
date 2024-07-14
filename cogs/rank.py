@@ -41,8 +41,8 @@ class RankRequest(discord.ui.View):
 
         member_roles = [rank]
 
-        member_roles.append(interaction.guild.get_role(self.bot.config["roles"]["verification"]["member"]))
-        member_roles.append(interaction.guild.get_role(self.bot.config["roles"]["verification"]["lr_category"]))
+        member_roles.append(interaction.guild.get_role(int(self.bot.config["roles"]["verification"]["member"])))
+        member_roles.append(interaction.guild.get_role(int(self.bot.config["roles"]["verification"]["lr_category"])))
 
         await member.add_roles(*member_roles)
 
