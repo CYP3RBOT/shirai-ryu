@@ -6,6 +6,7 @@ List of all the updates that are made on the bot.
 
 - Added new roles to rank-request and verification system
 - Create "unverified" auto role
+- Add "/giveaway" command
 
 ### Version 1.2 (14 July 2024)
 

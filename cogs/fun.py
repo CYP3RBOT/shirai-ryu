@@ -2,6 +2,7 @@ import random
 
 import aiohttp
 import discord
+from discord import app_commands
 from discord.ext import commands
 from discord.ext.commands import Context
 
@@ -24,7 +25,6 @@ class Choice(discord.ui.View):
     ) -> None:
         self.value = "tails"
         self.stop()
-
 
 class RockPaperScissors(discord.ui.Select):
     def __init__(self) -> None:
@@ -78,12 +78,10 @@ class RockPaperScissors(discord.ui.Select):
             embed=result_embed, content=None, view=None
         )
 
-
 class RockPaperScissorsView(discord.ui.View):
     def __init__(self) -> None:
         super().__init__()
         self.add_item(RockPaperScissors())
-
 
 class Fun(commands.Cog, name="fun"):
     def __init__(self, bot) -> None:
@@ -150,6 +148,74 @@ class Fun(commands.Cog, name="fun"):
         view = RockPaperScissorsView()
         await context.send("Please make your choice", view=view)
 
+    @app_commands.command(
+        name="giveaway",
+        description="Select a winner from a giveaway poll"
+    )
+    async def giveaway(self, interaction: discord.Interaction, message: str):
+        if not message.startswith("https://discord.com/channels/"):
+            embed = discord.Embed(
+                description="Not a valid message link.",
+                color=discord.Color.red()
+            )
 
+            await interaction.response.send_message(embed=embed)
+        
+        guild_id = message.split("discord.com/channels/")[1].split("/")[0]
+        channel_id = message.split(str(guild_id) + "/")[1].split("/")[0]
+        message_id = message.split(str(guild_id) + "/")[1].split("/")[1]
+
+        try:
+            channel = interaction.guild.get_channel_or_thread(int(channel_id))
+        except:
+            embed = discord.Embed(
+                description="Channel not found.",
+                color=discord.Color.red()
+            )
+
+            await interaction.response.send_message(embed=embed)
+        
+        try:
+            message_obj = await channel.fetch_message(int(message_id))
+        except:
+            embed = discord.Embed(
+                description="Message not found.",
+                color=discord.Color.red()
+            )
+
+            await interaction.response.send_message(embed=embed)
+            
+
+        message_poll = message_obj.poll
+
+        if not message_poll:
+            embed = discord.Embed(
+                description="Poll not found.",
+                color=discord.Color.red()
+            )
+
+            await interaction.response.send_message(embed=embed)    
+        
+        poll_duration = message_poll.duration
+        poll_question = message_poll.question
+        poll_answer = message_poll.answers[0]
+        total_votes = message_poll.total_votes
+
+        embed = discord.Embed(
+            title="Giveaway",
+            description=f"Title: {poll_question}\nTotal Votes: {total_votes}",
+            color=discord.Color.blue()
+        )
+
+        embed.set_footer(text="Giveaway lasted " + str(poll_duration.seconds) + " seconds.")
+
+        voters = [voter async for voter in poll_answer.voters()]
+
+        winner = random.choice(voters)
+
+        embed.add_field(name="Winner", value=f"<@{winner.id}>")
+
+        await interaction.response.send_message(embed=embed)
+        
 async def setup(bot) -> None:
     await bot.add_cog(Fun(bot))
