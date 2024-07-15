@@ -186,7 +186,7 @@ class General(commands.Cog, name="general"):
     @app_commands.describe(
         link="The youtube video link to download"
     )
-    async def download(self, interaction: discord.Interaction, link: str) -> None:
+    async def download(self, interaction: Interaction, link: str) -> None:
         await interaction.response.defer(thinking=True)
 
         try:
@@ -221,7 +221,7 @@ class General(commands.Cog, name="general"):
     )
     @app_commands.describe(rank="The rank to request", proof="The proof of points required for requested rank")
     @app_commands.guild_only()
-    async def rank_request(self, interaction: discord.Interaction, rank: discord.Role, proof: discord.Attachment) -> None:
+    async def rank_request(self, interaction: Interaction, rank: discord.Role, proof: discord.Attachment) -> None:
         """
         Request a new rank.
 
@@ -322,6 +322,26 @@ class General(commands.Cog, name="general"):
         )
 
         await interaction.followup.send(embed=embed)
+
+    @app_commands.command(
+        name="member-count",
+        description="Get the guild's member count"
+    )
+    @app_commands.guild_only()
+    async def member_count(self, interaction: Interaction):
+        member_count = interaction.guild.member_count
+        bot_count = sum(i.bot for i in interaction.guild.members)
+        real_members = member_count - bot_count
+
+        embed = discord.Embed(
+            color=discord.Color.blue(),
+        )
+
+        embed.add_field(name="Members", value=str(member_count), inline=True)
+        embed.add_field(name="Bots", value=str(bot_count), inline=True)
+        embed.add_field(name="Real Members", value=str(real_members), inline=True)
+
+        await interaction.response.send_message(embed=embed)
 
 async def setup(bot) -> None:
     await bot.add_cog(General(bot))

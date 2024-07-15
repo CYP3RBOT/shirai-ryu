@@ -4,6 +4,7 @@ List of all the updates that are made on the bot.
 
 ### Version 1.4 (14 July 2024)
 
+- Added "/member-count"
 - Migrated most hybrid commands to slash commands.
 
 ### Version 1.3 (14 July 2024)
