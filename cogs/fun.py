@@ -152,6 +152,7 @@ class Fun(commands.Cog, name="fun"):
         name="giveaway",
         description="Select a winner from a giveaway poll"
     )
+    @app_commands.describe(message="The message link with the poll")
     @commands.has_permissions(administrator=True)
     async def giveaway(self, interaction: discord.Interaction, message: str):
         if not message.startswith("https://discord.com/channels/"):
@@ -204,13 +205,21 @@ class Fun(commands.Cog, name="fun"):
 
         embed = discord.Embed(
             title="Giveaway",
-            description=f"Title: {poll_question}\nTotal Votes: {total_votes}",
+            description=f"`Title`: {poll_question}\n`Total Votes`: {total_votes}",
             color=discord.Color.blue()
         )
 
         embed.set_footer(text="Giveaway lasted " + str(poll_duration.seconds) + " seconds.")
 
         voters = [voter async for voter in poll_answer.voters()]
+
+        if len(voters) == 0:
+            embed = discord.Embed(
+                description="There are no voters.",
+                color=discord.Color.red()
+            )
+
+            await interaction.response.send_message(embed=embed)
 
         winner = random.choice(voters)
 
