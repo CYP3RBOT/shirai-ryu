@@ -152,6 +152,7 @@ class Fun(commands.Cog, name="fun"):
         name="giveaway",
         description="Select a winner from a giveaway poll"
     )
+    @commands.has_permissions(administrator=True)
     async def giveaway(self, interaction: discord.Interaction, message: str):
         if not message.startswith("https://discord.com/channels/"):
             embed = discord.Embed(
