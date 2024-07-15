@@ -4,6 +4,8 @@ List of all the updates that are made on the bot.
 
 ### Version 1.4 (14 July 2024)
 
+- Separated listeners into cog files under "listeners" folder
+- Renamed "cogs" folder to "commands"
 - Added "/member-count"
 - Migrated most hybrid commands to slash commands.
 
