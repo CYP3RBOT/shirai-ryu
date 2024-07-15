@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS warns (
   id SERIAL PRIMARY KEY,
-  user_id VARCHAR(30) NOT NULL,
+  discord_id VARCHAR(30) NOT NULL,
   server_id VARCHAR(30) NOT NULL,
   moderator_id VARCHAR(30) NOT NULL,
   reason VARCHAR(255) NOT NULL,

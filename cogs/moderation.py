@@ -1,6 +1,6 @@
 import math
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import discord
 from discord import app_commands
@@ -367,6 +367,92 @@ class Moderation(commands.Cog, name="moderation"):
         await context.send(file=f)
         os.remove(log_file)
 
+    @app_commands.command(name="timeout", description="Timeout a member")
+    @app_commands.checks.has_permissions(manage_roles=True)
+    @app_commands.checks.bot_has_permissions(manage_roles=True)
+    @app_commands.describe(
+        member="The member to mute",
+        duration="The duration of the mute",
+        reason="The reason for the mute"
+    )
+    async def timeout(self, interaction: discord.Interaction, member: discord.Member, duration: str, reason: str):
+        # Check if the member trying to mute has a higher role than the target member
+        if member.top_role >= interaction.user.top_role:
+            embed = discord.Embed(
+                description=f"Cannot mute {member.mention} because they have a higher role.",
+                color=discord.Color.red()
+            )
+
+            await interaction.response.send_message(embed=embed)
+            return
+
+        # Check if the bot has a lower role than the target member
+        if interaction.guild.me.top_role <= member.top_role:
+            embed = discord.Embed(
+                description=f"Cannot mute {member.mention} because they have a higher role than me.",
+                color=discord.Color.red()
+            )
+
+            await interaction.response.send_message(embed=embed)
+            return
+
+        # Parse the duration
+        time_unit = duration[-1]
+        if not duration[:-1].isdigit():
+            embed = discord.Embed(
+                description="Invalid time unit. Use 'm' for minutes, 'h' for hours, or 'd' for days.",
+                color=discord.Color.red()
+            )
+
+            await interaction.response.send_message(embed=embed)
+            return
+
+        time_value = int(duration[:-1])
+
+        if time_unit == 'm':
+            delta = timedelta(minutes=time_value)
+        elif time_unit == 'h':
+            delta = timedelta(hours=time_value)
+        elif time_unit == 'd':
+            delta = timedelta(days=time_value)
+        else:
+            embed = discord.Embed(
+                description="Invalid time unit. Use 'm' for minutes, 'h' for hours, or 'd' for days.",
+                color=discord.Color.red()
+            )
+
+            await interaction.response.send_message(embed=embed)
+            return
+
+        max_duration = timedelta(days=28)
+        if delta > max_duration:
+            embed = discord.Embed(
+                description="Cannot mute someone for more than 28 days.",
+                color=discord.Color.red()
+            )
+
+            await interaction.response.send_message(embed=embed)
+            return
+
+        # Timeout the member
+        try:
+            embed = discord.Embed(
+                description=f"Muted {member.mention} for {duration}.",
+                color=discord.Color.blue()
+            )
+            
+            await member.edit(timed_out_until=(discord.utils.utcnow() + delta), reason=reason)
+            await interaction.response.send_message(embed=embed)
+            
+        except Exception as e:
+            print(e)
+            embed = discord.Embed(
+                description=f"An error occurred while trying to mute {member.mention}.",
+                color=discord.Color.red()
+            )
+
+            await interaction.response.send_message(embed=embed)
+            return      
 
 async def setup(bot) -> None:
     await bot.add_cog(Moderation(bot))
