@@ -19,7 +19,7 @@ class Tracker(commands.Cog, name="tracker"):
         description="Add a user to the tracker"
     )
     @app_commands.describe(user="The user to add", reason="The reason for tracking the user")
-    @commands.has_permissions(administrator=True)
+    @app_commands.checks.has_permissions(administrator=True)
     async def add(self, interaction: discord.Interaction, user: str, reason: str) -> None:
         """
         Add a user to the tracker.
@@ -75,7 +75,7 @@ class Tracker(commands.Cog, name="tracker"):
         description="Remove a user from the tracker"
     )
     @app_commands.describe(user="The user to remove")
-    @commands.has_permissions(administrator=True)
+    @app_commands.checks.has_permissions(administrator=True)
     async def remove(self, interaction: discord.Interaction, user: str) -> None:
         """
         Remove a user from the tracker.
@@ -127,7 +127,7 @@ class Tracker(commands.Cog, name="tracker"):
         name="list",
         description="List all the users in the tracker"
     )
-    @commands.has_permissions(administrator=True)
+    @app_commands.checks.has_permissions(administrator=True)
     async def list(self, interaction: discord.Interaction) -> None:
         """
         List all users in the tracker.

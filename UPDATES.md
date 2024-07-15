@@ -2,11 +2,16 @@
 
 List of all the updates that are made on the bot.
 
+### Version 1.4 (14 July 2024)
+
+- Migrated most hybrid commands to slash commands.
+
 ### Version 1.3 (14 July 2024)
 
 - Added new roles to rank-request and verification system
 - Create "unverified" auto role
 - Add "/giveaway" command
+- Add "/timeout" command
 
 ### Version 1.2 (14 July 2024)
 

@@ -7,9 +7,12 @@ import math
 
 import asyncpg
 import discord
+
 from discord.ext import commands, tasks
 from discord.ext.commands import Context
 from dotenv import load_dotenv
+
+from utils import command_tree
 
 from database import DatabaseManager
 from utils import roblox
@@ -74,14 +77,13 @@ file_handler.setFormatter(file_handler_formatter)
 logger.addHandler(console_handler)
 logger.addHandler(file_handler)
 
-
 class DiscordBot(commands.Bot):
     def __init__(self) -> None:
         super().__init__(
             command_prefix=commands.when_mentioned_or(config["prefix"]),
             intents=intents,
             help_command=None,
-            
+            tree_cls=command_tree.BotCommandTree
         )
         """
         This creates custom bot variables so that we can access these variables in cogs more easily.
@@ -367,7 +369,7 @@ class DiscordBot(commands.Bot):
             await context.send(embed=embed)
         else:
             raise error
-        
+
     async def on_member_join(self, member: discord.Member) -> None:
         """
         The code in this event is executed every time a member joins the guild.
