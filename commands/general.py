@@ -29,6 +29,13 @@ class RankRequest(discord.ui.View):
 
         if not member or not rank:
             await interaction.message.delete()
+            self.bot.logger.info(user_field)
+            self.bot.logger.info(rank_field)
+            self.bot.logger.info(user_id)
+            self.bot.logger.info(rank_id)
+            self.bot.logger.info(member)
+            self.bot.logger.info(rank)
+            self.bot.logger.error("Member or rank not found.")
             return
         
         ranks = self.bot.config['ranks']
