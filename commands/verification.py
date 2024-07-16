@@ -185,7 +185,48 @@ class VerificationModal(discord.ui.Modal, title='Verification'):
             await interaction.user.send(embed=embed, view=confirmation_buttons)
         except discord.Forbidden:
             await interaction.response.send_message("I cannot send you DMs. Please enable DMs from server members.")
-    
+
+class BloxlinkBind(discord.ui.View):
+    def __init__(self, bot: commands.Bot, user: discord.User, user_id: str) -> None:
+        super().__init__()
+        self.bot = bot
+        self.user = user
+        self.user_id = user_id
+
+        self.error_embed = discord.Embed(
+            description="You cannot use this button!",
+            color=discord.Color.red()
+        )
+
+    @discord.ui.button(label="Yes", style=discord.ButtonStyle.green)
+    async def confirm(
+        self, interaction: Interaction, button: discord.ui.Button
+    ) -> None:
+        if interaction.user != self.user:
+            await interaction.response.send_message(embed=self.error_embed, ephemeral=True)
+            return
+        
+        success = await self.bot.database.create_verification(str(self.user.id), self.user_id)
+        
+        if success:
+            embed = discord.Embed(
+                description="You have been successfully verified!",
+                color=discord.Color.green()
+            )
+
+            await interaction.message.edit(embed=embed, view=None)
+
+    @discord.ui.button(label="No", style=discord.ButtonStyle.danger)
+    async def cancel(
+        self, interaction: Interaction, button: discord.ui.Button
+    ) -> None:
+        if interaction.user != self.user:
+            await interaction.response.send_message(embed=self.error_embed, ephemeral=True)
+            return
+        
+        await interaction.message.edit(embed=interaction.message.embeds[0], view=None)
+        await interaction.response.send_modal(VerificationModal(self.bot))
+
 class Verification(commands.Cog, name="verification"):
     def __init__(self, bot) -> None:
         self.bot = bot
@@ -197,7 +238,7 @@ class Verification(commands.Cog, name="verification"):
     @app_commands.guild_only()
     async def verify(self, interaction: Interaction) -> None:
         accounts = await self.bot.database.get_verification_by_discord_id(str(interaction.user.id))
-
+        
         if accounts:
             if len(accounts) > 1:
                 embed = discord.Embed(
@@ -243,7 +284,7 @@ class Verification(commands.Cog, name="verification"):
 
                 await interaction.response.send_message(embed=embed) 
                 return
-
+        
         confirmation_buttons = Confirm(self.bot)
 
         active_code = await self.bot.database.get_verification_code(str(interaction.user.id))
@@ -279,7 +320,34 @@ class Verification(commands.Cog, name="verification"):
             except discord.Forbidden:
                 await interaction.response.send_message("I cannot send you DMs. Please enable DMs from server members.")
         else:
-            await interaction.response.send_modal(VerificationModal(self.bot))
+            data = await roblox.get_bloxlink_bind(str(interaction.guild.id), str(interaction.user.id))
+
+            if data:
+                if data['robloxID']:
+                    user_id = int(data['robloxID'])
+
+                    verification = await self.bot.database.get_verification_by_roblox_id(str(user_id))
+
+                    if verification:
+                        user_id = None
+                        await interaction.response.send_modal(VerificationModal(self.bot))
+
+                    user_name = await roblox.get_users_by_ids([user_id])
+
+                    if not user_name:
+                        user_id = None
+                        await interaction.response.send_modal(VerificationModal(self.bot))
+                    
+                    user_name = user_name['data'][0]
+
+                    embed = discord.Embed(
+                        description=f"Bloxlink bind found. Would you like to verify as: [{user_name['name']}]({await roblox.profile(str(user_id))})",
+                        color=discord.Color.blue()
+                    )
+
+                    await interaction.response.send_message(embed=embed, view=BloxlinkBind(self.bot, interaction.user, str(user_id)))
+
+            
 
     @app_commands.command(
         name="unverify",

@@ -189,7 +189,7 @@ async def profile(user_id: str) -> str:
 
     return f"https://www.roblox.com/users/{user_id}/profile"
 
-async def get_community_groups(bot: commands.Bot, user_id: str) -> filter:
+async def get_community_groups(bot: commands.Bot, user_id: str) -> list:
     """
     Get the ROBLOX community groups by ID.
 
@@ -201,6 +201,15 @@ async def get_community_groups(bot: commands.Bot, user_id: str) -> filter:
     groups = await get_user_groups(user_id)
     groups = groups["data"]
 
-    community_groups = filter(lambda group: str(group["group"]["id"]) in bot.config["community_groups"], groups)
+    community_groups = list(filter(lambda group: str(group["group"]["id"]) in bot.config["community_groups"], groups))
     
     return community_groups
+
+async def get_bloxlink_bind(guild_id: str, discord_id: str) -> dict:
+    url = f"https://api.blox.link/v4/public/guilds/{guild_id}/discord-to-roblox/{discord_id}"
+
+    response = requests.get(url, headers = {"Authorization": os.getenv("BLOXLINK_API_TOKEN")})
+
+    if response.status_code == 200:
+        return response.json()
+    return []
