@@ -39,26 +39,41 @@ class RankRequest(discord.ui.View):
             return
         
         ranks = self.bot.config['ranks']
-        rank_roles = []
+
+        roles_to_add = [] # Roles to add to the user
+        roles_to_remove = [] # Roles to remove from the user
+
+        previous_rank = None
 
         for member_role in member.roles:
             for rank_obj in ranks:
-                if str(member_role.id) == rank_obj['discord_role']:
-                    rank_roles.append(member_role)    
-                if str(member_role.id) == self.bot.config["roles"]["verification"]["outsider"]:
-                    rank_roles.append(member_role)
+                if str(member_role.id) == rank_obj['discord_role']: # If the member has a rank that is in the ranks list
+                    roles_to_remove.append(member_role)    
+                if str(member_role.id) == self.bot.config["roles"]["verification"]["outsider"]: # If the member is an outsider
+                    roles_to_remove.append(member_role)
 
-        await member.remove_roles(*rank_roles)        
+        if len(roles_to_remove) > 0:
+            previous_rank = roles_to_remove[-1]
 
-        member_roles = [rank]
+        roles_to_add.append(rank)
+        roles_to_add.append(interaction.guild.get_role(int(self.bot.config["roles"]["verification"]["member"])))
+        
+        rank_obj = list(filter(lambda role: str(rank.id) == role['discord_role'], ranks))[0]
+        
+        if rank_obj['type'] == "lr":
+            roles_to_add.append(interaction.guild.get_role(int(self.bot.config["roles"]["verification"]["lr_category"])))
+            roles_to_remove.append(interaction.guild.get_role(int(self.bot.config["roles"]["verification"]["mr_category"])))
+        else:
+            roles_to_remove.append(interaction.guild.get_role(int(self.bot.config["roles"]["verification"]["lr_category"])))
+            roles_to_add.append(interaction.guild.get_role(int(self.bot.config["roles"]["verification"]["mr_category"])))
 
-        member_roles.append(interaction.guild.get_role(int(self.bot.config["roles"]["verification"]["member"])))
-        member_roles.append(interaction.guild.get_role(int(self.bot.config["roles"]["verification"]["lr_category"])))
 
-        await member.add_roles(*member_roles)
+        await member.remove_roles(*roles_to_remove)
+        await member.add_roles(*roles_to_add)
 
         embed.title = "Rank Request - Accepted"
-        embed.add_field(name="Previous Rank", value=f"<@&{rank_roles[-1].id}>")
+        if previous_rank:
+            embed.add_field(name="Previous Rank", value=f"<@&{previous_rank.id}>")
         embed.add_field(name="Status", value=f"Accepted by: {interaction.user} | <@{interaction.user.id}> | `{interaction.user.id}`", inline=False)
         embed.color = discord.Color.green()
 
@@ -265,15 +280,15 @@ class General(commands.Cog, name="general"):
         
         member = await interaction.guild.fetch_member(interaction.user.id)
 
-        rank_roles = []
+        roles_to_remove = []
 
         for member_role in member.roles:
             for rank_obj in ranks:
                 if str(member_role.id) == rank_obj['discord_role']:
-                    rank_roles.append(member_role)
+                    roles_to_remove.append(member_role)
         
-        if len(rank_roles) > 0:
-            highest_role = rank_roles[-1]
+        if len(roles_to_remove) > 0:
+            highest_role = roles_to_remove[-1]
 
             if highest_role.position > rank.position:
                 embed = discord.Embed(
@@ -284,7 +299,7 @@ class General(commands.Cog, name="general"):
                 await interaction.followup.send(embed=embed)
                 return
             
-            if rank in rank_roles:
+            if rank in roles_to_remove:
                 embed = discord.Embed(
                     description=f"You cannot request a rank you already have.",
                     color=discord.Color.red()
@@ -319,7 +334,7 @@ class General(commands.Cog, name="general"):
         embed.add_field(name="Discord User", value=f"{interaction.user} | <@{interaction.user.id}> | `{interaction.user.id}`", inline=False)
         embed.add_field(name="Joined At", value=f"<t:{math.floor(member.joined_at.timestamp())}:d>", inline=False)
 
-        embed.add_field(name="Rank Requesting", value=f"<@&{rank.id}> | {is_rank_role[0]['points']} points required")
+        embed.add_field(name="Rank Requesting", value=f"<@&{rank.id}> | {is_rank_role[0]['requirements']}")
 
         await rank_requests_channel.send(embed=embed, view=RankRequest(self.bot))
 

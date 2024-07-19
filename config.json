@@ -8,6 +8,7 @@
       "unverified": "1261582312701694023",
       "outsider": "1261558361627951186",
       "member": "1262091877382098994",
+      "mr_category": "1261556381618802688",
       "lr_category": "1261556492193235044"
     },
     "imperium": [
@@ -26,33 +27,39 @@
   "ranks": [
     {
       "name": "Seasoned Warrior",
-      "points": 1000,
-      "discord_role": "1261552397801623604"
+      "requirements": "10000 factions points or 185 events attended",
+      "discord_role": "1261552397801623604",
+      "type": "mr"
     },
     {
       "name": "Warrior",
-      "points": 500,
-      "discord_role": "1261552397071814676"
+      "requirements": "5000 factions points or 100 events attended",
+      "discord_role": "1261552397071814676",
+      "type": "mr"
     },
     {
       "name": "Master Assassin",
-      "points": 375,
-      "discord_role": "1261552396392337518"
+      "requirements": "1500 factions points or 60 events attended",
+      "discord_role": "1261552396392337518",
+      "type": "lr"
     },
     {
       "name": "Assassin",
-      "points": 250,
-      "discord_role": "1261552395863851029"
+      "requirements": "750 factions points or 25 events attended",
+      "discord_role": "1261552395863851029",
+      "type": "lr"
     },
     {
       "name": "Vanguard",
-      "points": 100,
-      "discord_role": "1261552386330329171"
+      "requirements": "100 factions points or 5 events attended",
+      "discord_role": "1261552386330329171",
+      "type": "lr"
     },
     {
       "name": "Novice",
-      "points": 0,
-      "discord_role": "1261550133640953887"
+      "requirements": "Join the faction",
+      "discord_role": "1261550133640953887",
+      "type": "lr"
     }
   ]
 }
