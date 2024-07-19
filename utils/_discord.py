@@ -91,5 +91,4 @@ async def update_user(bot: commands.Bot, member: discord.Member, roblox_id: str 
         "nick_error": nick_error
     }
     
-        
     

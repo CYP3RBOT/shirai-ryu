@@ -198,3 +198,45 @@ class DatabaseManager:
 
             if result: return True
             return False
+        
+#   ==============================
+#   =========== EVENTS ===========
+#   ==============================
+
+    async def batch_log_event(self, members: list[str]) -> bool:
+        date = datetime.datetime.now()
+        async with self.connection.acquire() as conn:
+            try:
+                for member in members:
+                    result = await conn.fetchrow(
+                    "SELECT events FROM events WHERE discord_id=$1",
+                    member
+                    )
+                    if result is not None:
+                        events = result['events'] + 1
+
+                        await conn.execute(
+                            "UPDATE events SET events=$1 WHERE discord_id=$2",
+                            events,
+                            member
+                        )
+                    else:
+                        await conn.execute(
+                            "INSERT INTO events(discord_id, events, created_at) VALUES ($1, $2, $3)",
+                            member,
+                            1,
+                            date
+                        )
+            except Exception as e:
+                print(e)
+                return False
+            
+            return True
+        
+    async def get_events(self, discord_id: str) -> asyncpg.Record:
+        async with self.connection.acquire() as conn:
+            result = await conn.fetchrow(
+                "SELECT discord_id, events, created_at FROM events WHERE discord_id=$1",
+                discord_id,
+            )
+            return result

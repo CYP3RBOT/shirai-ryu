@@ -365,5 +365,80 @@ class General(commands.Cog, name="general"):
 
         await interaction.response.send_message(embed=embed)
 
+    @app_commands.command(
+        name="log",
+        description="Log an event"
+    )
+    @app_commands.guild_only()
+    @app_commands.describe(message_link="The event to log")
+    async def log(self, interaction: Interaction, message_link: str):
+        await interaction.response.defer()
+
+        try:
+            # Extracting channel_id and message_id from the message_link
+            split_link = message_link.split("/")
+            channel_id = int(split_link[5])
+            message_id = int(split_link[-1])
+
+            # Fetching the channel and message
+            channel = self.bot.get_channel(channel_id)
+            if channel is None:
+                raise ValueError("Channel not found")
+
+            message = await channel.fetch_message(message_id)
+
+            members = message.mentions
+
+            if len(members) == 0:
+                embed = discord.Embed(
+                    description="No members mentioned in the message",
+                    color=discord.Color.red()
+                )
+                await interaction.followup.send(embed=embed)
+                return
+            
+            success = await self.bot.database.batch_log_event([str(member.id) for member in members])
+            
+            if success:
+                embed = discord.Embed(
+                    description="Logged the event for these members:\n\n" + ", ".join([f"<@{member.id}>" for member in members]),
+                    color=discord.Color.blue()
+                )
+            else:
+                embed = discord.Embed(
+                    description="Could not log the event",
+                    color=discord.Color.red()
+                )
+
+            await interaction.followup.send(embed=embed)
+
+        except Exception as e:
+            embed = discord.Embed(
+                description=f"Invalid message link or could not fetch the message",
+                color=discord.Color.red(),
+            )
+            await interaction.followup.send(embed=embed)
+
+    @app_commands.command(
+        name="events",
+        description="Get the number of events logged for a user"
+    )
+    @app_commands.describe(user="The user to get the events for")
+    async def events(self, interaction: Interaction, user: discord.User):
+        await interaction.response.defer()
+
+        events = await self.bot.database.get_events(str(user.id))
+
+        embed = discord.Embed(
+            description=f"<@{user.id}> has attended `0` events",
+            color=discord.Color.blue()
+        )
+
+        if events:
+            embed.description=str(f"<@{user.id}> has attended `{str(events['events'])}` events")
+
+        await interaction.followup.send(embed=embed)
+ 
+
 async def setup(bot) -> None:
     await bot.add_cog(General(bot))
