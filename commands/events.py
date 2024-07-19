@@ -101,6 +101,7 @@ class General(commands.Cog, name="general"):
         leaderboard = await self.bot.database.get_leaderboard()
 
         if leaderboard:
+            leaderboard = leaderboard[:10]  # Select only the top ten players
             description = "\n".join([f"{index+1}. <@{user['discord_id']}> - {user['events']} events" for index, user in enumerate(leaderboard)])
         else:
             description = "No events logged yet"
