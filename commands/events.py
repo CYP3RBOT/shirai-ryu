@@ -3,7 +3,7 @@ import discord
 from discord import app_commands, Interaction
 from discord.ext import commands
 
-class General(commands.Cog, name="general"):
+class Events(commands.Cog, name="events"):
     def __init__(self, bot) -> None:
         self.bot = bot
 
@@ -116,4 +116,4 @@ class General(commands.Cog, name="general"):
 
 
 async def setup(bot) -> None:
-    await bot.add_cog(General(bot))
+    await bot.add_cog(Events(bot))
