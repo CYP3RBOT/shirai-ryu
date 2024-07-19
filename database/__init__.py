@@ -240,3 +240,10 @@ class DatabaseManager:
                 discord_id,
             )
             return result
+        
+    async def get_leaderboard(self) -> list[asyncpg.Record]:
+        async with self.connection.acquire() as conn:
+            rows = await conn.fetch(
+                "SELECT * FROM events ORDER BY events DESC",
+            )
+            return [dict(row) for row in rows]
