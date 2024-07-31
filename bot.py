@@ -117,10 +117,6 @@ class DiscordBot(commands.Bot):
 
         self.database = DatabaseManager(connection=self.db_pool)
 
-    async def close(self):
-        await self.db_pool.close()
-        await super().close()
-
     async def load_cogs(self) -> None:
         """
         The code in this function is executed whenever the bot will start.
