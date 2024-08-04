@@ -35,7 +35,7 @@
     {
       "name": "Warrior Sage",
       "requirements": "5000 factions points or 200 events attended",
-      "discord_role": "1261552397071814676",
+      "discord_role": "1266224785679974472",
       "type": "mr"
     },
     {
@@ -65,7 +65,7 @@
     {
       "name": "Enforcer",
       "requirements": "100 factions points or 5 events attended",
-      "discord_role": "1261552386330329171",
+      "discord_role": "1266224851241140286",
       "type": "lr"
     },
     {
