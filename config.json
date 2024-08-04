@@ -28,30 +28,42 @@
   "ranks": [
     {
       "name": "Seasoned Warrior",
-      "requirements": "10000 factions points or 185 events attended",
+      "requirements": "10000 factions points or 400 events attended",
       "discord_role": "1261552397801623604",
       "type": "mr"
     },
     {
+      "name": "Warrior Sage",
+      "requirements": "5000 factions points or 200 events attended",
+      "discord_role": "1261552397071814676",
+      "type": "mr"
+    },
+    {
       "name": "Warrior",
-      "requirements": "5000 factions points or 100 events attended",
+      "requirements": "3000 factions points or 150 events attended",
       "discord_role": "1261552397071814676",
       "type": "mr"
     },
     {
       "name": "Master Assassin",
-      "requirements": "1500 factions points or 60 events attended",
+      "requirements": "1750 factions points or 80 events attended",
       "discord_role": "1261552396392337518",
       "type": "lr"
     },
     {
       "name": "Assassin",
-      "requirements": "750 factions points or 25 events attended",
+      "requirements": "1000 factions points or 30 events attended",
       "discord_role": "1261552395863851029",
       "type": "lr"
     },
     {
       "name": "Vanguard",
+      "requirements": "500 factions points or 15 events attended",
+      "discord_role": "1261552386330329171",
+      "type": "lr"
+    },
+    {
+      "name": "Enforcer",
       "requirements": "100 factions points or 5 events attended",
       "discord_role": "1261552386330329171",
       "type": "lr"
