@@ -14,7 +14,10 @@ class Log(commands.Cog):
         """
         
         try:
-            await member.add_roles(member.guild.get_role(int(self.bot.config['roles']['verification']['unverified'])))
+            await member.add_roles(
+                member.guild.get_role(int(self.bot.config['roles']['verification']['unverified'])),
+                member.guild.get_role(int(self.bot.config['roles']['verification']['basic_category']))
+            )
         except:
             pass  
 
