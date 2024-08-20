@@ -1,7 +1,7 @@
 {
   "prefix": "!",
   "invite_link": "https://discord.com/oauth2/authorize?client_id=1261360375031664661&permissions=8&integration_type=0&scope=bot+applications.commands",
-  "community_groups": ["34520138"],
+  "community_groups": ["34657128", "34520138"],
   "roles": {
     "verification": {
       "verified": "1261533850484609115",
@@ -10,13 +10,9 @@
       "member": "1262091877382098994",
       "mr_category": "1261556381618802688",
       "lr_category": "1261556492193235044",
-      "basic_category": "1262167536389324800"
+      "basic_category": "1262167536389324800",
+      "faction_supporter_group_role": "111376269"
     },
-    "imperium": [
-      "1261552320727093379",
-      "1261552327823724555",
-      "1261552328004337735"
-    ],
     "moderator": "1261605836258803722",
     "officer_perms": "1261556128030920785"
   },
@@ -31,49 +27,57 @@
       "name": "Seasoned Warrior",
       "requirements": "10000 factions points or 400 events attended",
       "discord_role": "1261552397801623604",
-      "type": "mr"
+      "type": "mr",
+      "group_role": "112572242"
     },
     {
       "name": "Warrior Sage",
       "requirements": "5000 factions points or 200 events attended",
       "discord_role": "1266224785679974472",
-      "type": "mr"
+      "type": "mr",
+      "group_role": "111928512"
     },
     {
       "name": "Warrior",
       "requirements": "3000 factions points or 150 events attended",
       "discord_role": "1261552397071814676",
-      "type": "mr"
+      "type": "mr",
+      "group_role": "112576314"
     },
     {
       "name": "Master Assassin",
       "requirements": "1750 factions points or 80 events attended",
       "discord_role": "1261552396392337518",
-      "type": "lr"
+      "type": "lr",
+      "group_role": "112004267"
     },
     {
       "name": "Assassin",
       "requirements": "1000 factions points or 30 events attended",
       "discord_role": "1261552395863851029",
-      "type": "lr"
+      "type": "lr",
+      "group_role": "113308331"
     },
     {
       "name": "Vanguard",
       "requirements": "500 factions points or 15 events attended",
       "discord_role": "1261552386330329171",
-      "type": "lr"
+      "type": "lr",
+      "group_role": "113112270"
     },
     {
       "name": "Enforcer",
       "requirements": "100 factions points or 5 events attended",
       "discord_role": "1266224851241140286",
-      "type": "lr"
+      "type": "lr",
+      "group_role": "111596525"
     },
     {
       "name": "Novice",
       "requirements": "Join the faction",
       "discord_role": "1261550133640953887",
-      "type": "lr"
+      "type": "lr",
+      "group_role": "113192180"
     }
   ]
 }

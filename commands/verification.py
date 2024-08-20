@@ -347,8 +347,6 @@ class Verification(commands.Cog, name="verification"):
 
                     await interaction.response.send_message(embed=embed, view=BloxlinkBind(self.bot, interaction.user, str(user_id)))
 
-            
-
     @app_commands.command(
         name="unverify",
         description="Initiate the unverification sequence.",

@@ -191,7 +191,7 @@ async def profile(user_id: str) -> str:
 
 async def get_community_groups(bot: commands.Bot, user_id: str) -> list:
     """
-    Get the ROBLOX community groups by ID.
+    Get Shirai Ryu-related ROBLOX groups by user ID.
 
     :param bot: The Discord bot.
     :param user_id: The user ID.

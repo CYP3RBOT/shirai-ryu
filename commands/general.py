@@ -101,7 +101,8 @@ class General(commands.Cog, name="general"):
     )
     @app_commands.describe(message="The message that should be repeated by the bot")
     async def say(self, interaction: Interaction, *, message: str) -> None:
-        await interaction.response.send_message(message)
+        await interaction.response.send_message("Saying...", ephemeral=True)
+        await interaction.channel.send(message)
 
     @app_commands.command(
         name="help", description="List all commands the bot has loaded"
