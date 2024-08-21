@@ -3,7 +3,7 @@ from discord.ext import commands
 
 from utils import roblox
 
-async def update_user(bot: commands.Bot, member: discord.Member, roblox_id: str | None = None) -> dict:
+async def update_user(bot: commands.Bot, member: discord.Member, roblox_id: str | None = None) -> dict | None:
     """
     Update a Discord user's nickname and roles from ID in a guild.
     
@@ -27,33 +27,47 @@ async def update_user(bot: commands.Bot, member: discord.Member, roblox_id: str 
     # ====================
 
     current_roles = member.roles
-    roles_to_add = [bot.config["roles"]["verification"]["verified"], bot.config["roles"]["verification"]["outsider"]]
+    roles_to_add = [bot.config["roles"]["verification"]["verified"], bot.config["roles"]["verification"]["outsider"], bot.config["roles"]["verification"]["basic_category"]]
     roles_to_remove = [bot.config["roles"]["verification"]["unverified"]]
 
-    # community_groups = await roblox.get_community_groups(bot, roblox_id)
+    community_groups = await roblox.get_community_groups(bot, roblox_id)
+    if community_groups:
+        community_groups = list(community_groups)
+        in_shirai_ryu = filter(lambda group: str(group["group"]["id"]) == bot.config["community_groups"][0], community_groups)
 
-    # if community_groups:
-    #     community_groups = list(community_groups)
-    #     in_imperium = filter(lambda group: str(group["group"]["id"]) == bot.config["community_groups"][0], community_groups)
-
-    #     if in_imperium:
-    #         in_imperium = list(in_imperium)
+        if in_shirai_ryu:
+            in_shirai_ryu = list(in_shirai_ryu)
             
-    #         rank_name = in_imperium[0]["role"]["name"]
-    #         rank = in_imperium[0]["role"]["rank"] # TODO: Give appropriate roles based on rank
+            shirai_ryu_rank_name = in_shirai_ryu[0]["role"]["name"] # The role name (Ex. Technician)
+            shirai_ryu_rank = in_shirai_ryu[0]["role"]["rank"] # The rank number (Ex. 254)
+            shirai_ryu_rank_id = in_shirai_ryu[0]["role"]["id"] # The role ID (Ex. 112572242)
 
-    #         role = discord.utils.get(member.guild.roles, name=rank_name)
+            rank_role_obj = filter(lambda r: r.group_role == str(shirai_ryu_rank_id), bot.config.ranks)
+            rank_type = rank_role_obj.type
 
-    #         if role:
-    #             roles_to_add.append(str(role.id))
+            if not rank_role_obj and str(shirai_ryu_rank_id) != bot.config['roles']['verification']['faction_supporter_group_role']:
+                return
+            elif str(shirai_ryu_rank_id) == bot.config['roles']['verification']['faction_supporter_group_role']:
+                rank_role_id = bot.config['roles']['verification']['faction_supporter_group_role']
+                roles_to_add.append(rank_role_id)
+            else:
+                rank_role_id = rank_role_obj[0].role_id
+                roles_to_add.append(rank_role_id)
 
-    #             for imperium_role in imperium_roles_list:
-    #                 if imperium_role != role:
-    #                     roles_to_remove.append(imperium_role)
+            other_ranks = filter(lambda r: r.group_role != str(shirai_ryu_rank_id), bot.config.ranks)
 
+            for rank in other_ranks:
+                roles_to_remove.append(rank.role_id)
 
-    #     else:
-    #         roles_to_remove.extend(imperium_roles_list)
+            if rank_type == "lr":
+                roles_to_add.append(bot.config["roles"]["verification"]["lr_category"])
+                roles_to_remove.remove(bot.config["roles"]["verification"]["mr_category"])
+            elif rank_type == "mr":
+                roles_to_add.remove(bot.config["roles"]["verification"]["lr_category"])
+                roles_to_remove.append(bot.config["roles"]["verification"]["mr_category"])
+            else:
+                roles_to_remove.remove(bot.config["roles"]["verification"]["lr_category"])
+                roles_to_remove.remove(bot.config["roles"]["verification"]["mr_category"])
 
     # ====================
     # ===== NICKNAME =====

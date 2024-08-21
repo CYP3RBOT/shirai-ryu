@@ -172,4 +172,5 @@ class Tracker(commands.Cog, name="tracker"):
 
 
 async def setup(bot) -> None:
-    await bot.add_cog(Tracker(bot))
+    pass
+    # await bot.add_cog(Tracker(bot))

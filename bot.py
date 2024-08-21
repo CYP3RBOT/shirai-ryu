@@ -160,15 +160,6 @@ class DiscordBot(commands.Bot):
 
         await self.change_presence(activity=activity)
 
-    @tasks.loop(minutes=1440.0)
-    async def call_ceo_a_dirty_jew_task(self) -> None:
-        """
-        Call ceo a dirty jew once a day.
-        """
-
-        channel = await bot.fetch_channel(self.config['channels']['general'])
-        await channel.send("<@1134427767283396639> You are dirty jew.")
-
     @tasks.loop(minutes=1.0)
     async def check_tracker(self) -> None:
         """
@@ -267,10 +258,6 @@ class DiscordBot(commands.Bot):
         """
         await self.wait_until_ready()
 
-    @call_ceo_a_dirty_jew_task.after_loop
-    async def after_call_ceo_a_dirty_jew_task(self) -> None:
-        await self.wait_until_ready()
-
     @check_tracker.after_loop
     async def after_check_tracker(self) -> None:
         await self.wait_until_ready()
@@ -291,8 +278,7 @@ class DiscordBot(commands.Bot):
         await self.init_db()
         await self.load_cogs()
         self.status_task.start()
-        self.check_tracker.start()
-        # self.call_ceo_a_dirty_jew_task.start()
+        # self.check_tracker.start()
 
 bot = DiscordBot()
 bot.run(os.getenv("BOT_TOKEN"))
