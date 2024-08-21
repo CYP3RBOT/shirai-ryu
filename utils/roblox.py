@@ -77,7 +77,7 @@ async def get_user_presences_by_ids(user_ids: list[int]) -> dict:
     headers = {
         "accept": "application/json",
         "Content-Type": "application/json",
-        "Cookie": f".ROBLOSECURITY={os.getenv("ROBLOX_COOKIE")}"
+        "Cookie": f".ROBLOSECURITY={os.getenv('ROBLOX_COOKIE')}"
     }
 
     response = requests.post(url, headers=headers, data=data)

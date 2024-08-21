@@ -176,6 +176,7 @@ class DiscordBot(commands.Bot):
         """
 
         tracked_users = await bot.database.get_tracked_users()
+        tracked_users_dict = {int(user['roblox_id']): user for user in tracked_users}
 
         if len(tracked_users) == 0:
             return
@@ -216,7 +217,7 @@ class DiscordBot(commands.Bot):
             roblox_id = presence['userId']
             user_name = list(filter(lambda name: name['id'] == roblox_id, user_names))
             user_name = user_name[0]['name']
-            is_posted = tracked_users[i]['posted']
+            is_posted = tracked_users_dict[roblox_id]['posted']
 
             if presence['userPresenceType'] == 2: # user is playing a game
                 if not place_id and not is_posted: # user has joins off and wasn't posted
