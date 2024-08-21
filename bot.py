@@ -160,6 +160,15 @@ class DiscordBot(commands.Bot):
 
         await self.change_presence(activity=activity)
 
+    @tasks.loop(minutes=1440.0)
+    async def call_ceo_a_dirty_jew_task(self) -> None:
+        """
+        Call ceo a dirty jew once a day.
+        """
+
+        channel = await bot.fetch_channel(self.config['channels']['general'])
+        await channel.send("<@1134427767283396639> You are dirty jew.")
+
     @tasks.loop(minutes=1.0)
     async def check_tracker(self) -> None:
         """
@@ -220,6 +229,7 @@ class DiscordBot(commands.Bot):
                     await bot.database.modify_tracked_user(str(roblox_id), True)
                 elif place_id and not is_posted: # user has joins on and wasn't posted
                     if place_id == 4238077359:
+                        print(place_id, is_posted)
                         embed = discord.Embed(
                             description=f"[{user_name}]({await roblox.profile(roblox_id)}) is playing Coruscant.",
                             color=discord.Color.green()
@@ -249,13 +259,17 @@ class DiscordBot(commands.Bot):
                 embed.add_field(name="Date Added", value=f"<t:{math.floor(tracked_users[i]['created_at'].timestamp())}:d>")
 
                 embed.set_thumbnail(url=(await roblox.get_user_avatar(roblox_id)))
-                await tracker_post_channel.send(embed=embed)
+                await tracker_post_channel.send(content="<@&1271353317431185438>", embed=embed)
                 
     @status_task.before_loop
     async def before_status_task(self) -> None:
         """
         Before starting the status changing task, we make sure the bot is ready
         """
+        await self.wait_until_ready()
+
+    @call_ceo_a_dirty_jew_task.after_loop
+    async def after_call_ceo_a_dirty_jew_task(self) -> None:
         await self.wait_until_ready()
 
     @check_tracker.after_loop
@@ -278,7 +292,8 @@ class DiscordBot(commands.Bot):
         await self.init_db()
         await self.load_cogs()
         self.status_task.start()
-        # self.check_tracker.start()
+        self.check_tracker.start()
+        # self.call_ceo_a_dirty_jew_task.start()
 
 bot = DiscordBot()
 bot.run(os.getenv("BOT_TOKEN"))
